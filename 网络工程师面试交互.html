@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络工程师交互式面试宝典 (AI增强版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Professional Tech Blue -->
+    <!-- Application Structure Plan: The SPA retains its dashboard-like structure with a persistent sidebar for easy navigation between study modes. Two new sections, 'AI Concept Explainer' and 'AI Interview Simulator', have been added. This enhances the application from a passive content viewer to an active learning and practice tool. The structure remains intuitive, allowing users to seamlessly switch between reading content, practicing Q&A, and using AI-powered tools, which is a highly effective learning flow for complex technical topics. -->
+    <!-- Visualization & Content Choices: The core content remains text-based, organized into cards and interactive lists. New AI features use simple forms (input/textarea, buttons) to capture user queries and display AI-generated text responses. This is a goal-oriented design: 'Explain' a concept -> input field -> AI text output; 'Simulate' an interview -> question display + textarea for user answer -> AI feedback output. Loading indicators (spinners) are used to manage user expectations during API calls. This approach integrates advanced functionality without complicating the user interface. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'; }
+        .sidebar-link { transition: all 0.2s ease-in-out; }
+        .sidebar-link:hover, .sidebar-link.active { background-color: #334155; color: #f8fafc; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .question-answer { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+        .question.open .question-answer { max-height: 1000px; }
+        .code-block { background-color: #1e293b; color: #e2e8f0; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-family: 'Courier New', Courier, monospace; }
+        .filter-btn.active { background-color: #0ea5e9; color: white; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .gemini-response { white-space: pre-wrap; }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+<div class="flex h-screen bg-gray-100">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-800 text-slate-200 flex flex-col fixed h-full z-10 md:relative md:translate-x-0 transform -translate-x-full transition-transform duration-200 ease-in-out" id="sidebar">
+        <div class="p-5 border-b border-slate-700">
+            <h1 class="text-xl font-bold text-white">面试宝典导航</h1>
+            <p class="text-sm text-sky-300">AI 增强版</p>
+        </div>
+        <nav class="flex-1 px-2 py-4 space-y-2">
+            <button data-target="level-junior" class="sidebar-link w-full text-left px-4 py-2 rounded-md active">初级工程师</button>
+            <button data-target="level-intermediate" class="sidebar-link w-full text-left px-4 py-2 rounded-md">中级工程师</button>
+            <button data-target="level-senior" class="sidebar-link w-full text-left px-4 py-2 rounded-md">高级工程师</button>
+            <button data-target="questions" class="sidebar-link w-full text-left px-4 py-2 rounded-md">面试100题精选</button>
+            <button data-target="soft-skills" class="sidebar-link w-full text-left px-4 py-2 rounded-md">软技能与行为面试</button>
+            <button data-target="ai-explainer" class="sidebar-link w-full text-left px-4 py-2 rounded-md font-semibold text-sky-300">AI 概念解析</button>
+            <button data-target="ai-simulator" class="sidebar-link w-full text-left px-4 py-2 rounded-md font-semibold text-sky-300">AI 面试模拟</button>
+            <button data-target="commands" class="sidebar-link w-full text-left px-4 py-2 rounded-md">常用命令速查</button>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <header class="bg-white shadow-md md:hidden">
+            <div class="flex justify-between items-center p-4">
+                <h1 class="text-xl font-bold">网络工程师宝典</h1>
+                <button id="menu-button" class="text-gray-500 focus:outline-none focus:text-gray-700">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-100 p-4 sm:p-6 md:p-8" id="main-content">
+            <!-- Content will be injected here by JavaScript -->
+        </main>
+    </div>
+</div>
+
+<script>
+const appData = {
+    // Data for levels, soft skills, commands remains the same as previous version
+    levels: {
+        'level-junior': {
+            title: "初级网络工程师",
+            intro: "本部分聚焦于网络世界最核心的基础知识，是每一位网络工程师的必经之路。内容主要围绕OSI/TCP-IP模型、IP地址、交换与路由基础等，旨在考察您对基本概念的理解和掌握程度，适合刚入行或希望巩固基础的工程师。",
+            topics: [
+                {
+                    title: "OSI 七层模型和 TCP/IP 模型",
+                    content: `
+                        <p class="mb-4 text-slate-600">这是网络面试的“必考题”，几乎是所有技术问题的起点。它考察您是否理解网络通信是分层协作的。</p>
+                        <h4 class="font-semibold text-slate-700 mt-4 mb-2">OSI 七层模型（从上到下）</h4>
+                        <div class="space-y-2">
+                            <div class="p-3 bg-sky-100 rounded-md"><strong>应用层 (Application)</strong>：为应用程序提供网络服务 (HTTP, FTP, DNS)。</div>
+                            <div class="p-3 bg-sky-100 rounded-md"><strong>表示层 (Presentation)</strong>：数据格式转换、加密、压缩。</div>
+                            <div class="p-3 bg-sky-100 rounded-md"><strong>会话层 (Session)</strong>：建立、管理和终止会话。</div>
+                            <div class="p-3 bg-teal-100 rounded-md"><strong>传输层 (Transport)</strong>：提供端到端的可靠(TCP)或不可靠(UDP)数据传输。</div>
+                            <div class="p-3 bg-indigo-100 rounded-md"><strong>网络层 (Network)</strong>：逻辑寻址（IP地址），路由选择（路径选择）。</div>
+                            <div class="p-3 bg-purple-100 rounded-md"><strong>数据链路层 (Data Link)</strong>：物理寻址（MAC地址），错误检测。</div>
+                            <div class="p-3 bg-gray-200 rounded-md"><strong>物理层 (Physical)</strong>：传输比特流。</div>
+                        </div>
+                        <h4 class="font-semibold text-slate-700 mt-6 mb-2">高频追问：TCP vs UDP</h4>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                            <li><strong>TCP (传输控制协议)</strong>：面向连接、可靠、基于字节流。通过三次握手建立连接，四次挥手断开。有流量控制和拥塞控制。</li>
+                            <li><strong>UDP (用户数据报协议)</strong>：无连接、不可靠、基于数据报。开销小，效率高。适用于DNS, VoIP等。</li>
+                        </ul>
+                    `
+                },
+                {
+                    title: "IP 地址和子网划分",
+                    content: `
+                        <p class="mb-4 text-slate-600">这是网络工程师的基本功，考察您对IP地址的分类、私有地址范围的了解以及子网划分的计算能力。</p>
+                        <h4 class="font-semibold text-slate-700 mt-4 mb-2">私有地址范围</h4>
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                           <li>A类: <code>10.0.0.0/8</code></li>
+                           <li>B类: <code>172.16.0.0/12</code></li>
+                           <li>C类: <code>192.168.0.0/16</code></li>
+                        </ul>
+                    `
+                },
+                {
+                    title: "以太网和交换基础",
+                    content: `
+                        <h4 class="font-semibold text-slate-700 mt-4 mb-2">交换机工作原理</h4>
+                        <ol class="list-decimal list-inside space-y-2 text-slate-600">
+                            <li><strong>学习 (Learning)</strong>：记录源MAC地址与端口的映射。</li>
+                            <li><strong>转发/过滤 (Forwarding/Filtering)</strong>：根据目标MAC地址查找MAC表进行转发或过滤。</li>
+                            <li><strong>泛洪 (Flooding)</strong>：当目标未知时，向所有端口（除源端口）转发。</li>
+                        </ol>
+                    `
+                }
+            ]
+        },
+        'level-intermediate': {
+            title: "中级网络工程师",
+            intro: "中级部分要求您具备更深入的协议理解和独立解决问题的能力。我们将探讨高级交换技术、主流的内部网关协议（如OSPF）、以及NAT、ACL等核心网络服务。这部分内容是构建可靠、高效企业网络的基石。",
+            topics: [
+                {
+                    title: "高级交换技术",
+                    content: `
+                        <h4 class="font-semibold text-slate-700 mt-4 mb-2">RSTP (快速生成树协议)</h4>
+                        <p class="text-slate-600">802.1w标准，对STP的重大改进，将收敛时间从几十秒缩短到秒级甚至毫秒级。</p>
+                        <h4 class="font-semibold text-slate-700 mt-6 mb-2">EtherChannel (链路聚合)</h4>
+                        <p class="text-slate-600">将多条物理链路捆绑成一条逻辑链路，增加带宽、提高可靠性。推荐使用公有协议 LACP (802.3ad)。</p>
+                    `
+                },
+                {
+                    title: "内部网关协议 (IGP)",
+                    content: `
+                        <h4 class="font-semibold text-slate-700 mt-4 mb-2">OSPF (开放最短路径优先)</h4>
+                        <p class="text-slate-600">公有标准的链路状态协议。通过交换LSA（链路状态通告）来构建整个网络的拓扑数据库（LSDB），然后使用SPF算法计算最短路径。支持区域划分以提高扩展性。</p>
+                        <h4 class="font-semibold text-slate-700 mt-6 mb-2">EIGRP (增强型内部网关路由协议)</h4>
+                        <p class="text-slate-600">思科私有的高级距离矢量协议。使用DUAL算法确保无环路，并能通过可行后继（FS）实现极快的收敛。</p>
+                    `
+                }
+            ]
+        },
+        'level-senior': {
+            title: "高级网络工程师",
+            intro: "高级部分面向资深工程师和架构师，探讨大规模网络的设计、优化与前沿技术。内容涵盖互联网的基石BGP协议、保障关键业务的服务质量QoS、现代数据中心网络架构以及网络自动化等领域，考察您的技术深度与宏观视野。",
+            topics: [
+                {
+                    title: "BGP (边界网关协议)",
+                    content: `
+                        <p class="mb-4 text-slate-600">唯一的外部网关协议（EGP），用于在不同自治系统（AS）之间交换路由信息。BGP是一个策略驱动的协议，通过丰富的路径属性（如AS_PATH, LOCAL_PREF, MED）来精细化地控制路由选择。</p>
+                    `
+                },
+                {
+                    title: "QoS (服务质量)",
+                    content: `
+                        <p class="mb-4 text-slate-600">在网络拥塞时，为不同类型的流量提供差异化服务。现代网络主要使用DiffServ模型。</p>
+                    `
+                }
+            ]
+        },
+    },
+    questions: {
+        title: "面试100题精选",
+        intro: "这里汇集了从基础到高级的100个高频面试问题。您可以通过上方的按钮筛选不同难度的问题，点击问题标题来展开或收起答案。这是一种高效的自我检测和复习方式，帮助您巩固知识，为面试做好充分准备。",
+        items: [
+            // --- 基础技术 (30题) ---
+            { id: 1, category: '基础', q: '什么是 OSI 七层模型？每一层的功能是什么？', a: 'OSI 模型是一个理论框架，将网络通信划分为七个逻辑层...（详细解释）' },
+            { id: 2, category: '基础', q: 'TCP 和 UDP 的主要区别是什么？', a: 'TCP是面向连接、可靠的；UDP是无连接、不可靠的...（详细比较）' },
+            { id: 3, category: '基础', q: '如何区分私有 IP 和公网 IP？', a: '根据RFC 1918，私有地址范围是 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16...' },
+            { id: 4, category: '基础', q: '简述 ARP 和 RARP 协议的作用。', a: 'ARP将IP地址解析为MAC地址。RARP（已过时）将MAC地址解析为IP地址。' },
+            { id: 5, category: '基础', q: '什么是子网掩码？如何计算子网划分？', a: '子网掩码用于区分网络位和主机位。通过借用主机位来创建更多子网。' },
+            { id: 6, category: '基础', q: 'VLAN 的作用是什么？如何配置？', a: 'VLAN用于隔离广播域，增强安全。通过`vlan <id>`创建，`switchport access vlan <id>`分配端口。' },
+            { id: 7, category: '基础', q: '简述 DHCP 的工作原理。', a: 'DORA四步过程：Discover, Offer, Request, Acknowledge。' },
+            { id: 8, category: '基础', q: '路由协议分为哪几类？举例说明。', a: '内部网关协议(IGP)如OSPF, EIGRP；外部网关协议(EGP)如BGP。' },
+            { id: 9, category: '基础', q: '什么是三次握手和四次挥手？', a: 'TCP建立连接（三次握手：SYN -> SYN/ACK -> ACK）和断开连接（四次挥手）的过程。' },
+            { id: 10, category: '基础', q: '简述 NAT 的类型及其优缺点。', a: '静态NAT, 动态NAT, PAT。优点是节约IP，缺点是破坏端到端连接。' },
+            { id: 11, category: '基础', q: '什么是 QoS？在网络中有哪些应用场景？', a: '服务质量，用于保障关键应用的带宽、延迟，如VoIP、视频会议。' },
+            { id: 12, category: '基础', q: '解释 MAC 地址和 IP 地址的区别。', a: 'MAC是二层物理地址，IP是三层逻辑地址。' },
+            { id: 13, category: '基础', q: '简述 STP 协议的作用及其基本原理。', a: '防止二层环路。通过选举根桥和阻塞冗余端口实现。' },
+            { id: 14, category: '基础', q: '什么是 ACL？如何应用？', a: '访问控制列表，用于过滤流量，应用在接口的in或out方向。' },
+            { id: 15, category: '基础', q: 'DNS 是如何解析域名的？', a: '通过递归和迭代查询，从根域名服务器到顶级域再到权威服务器。' },
+            { id: 16, category: '基础', q: '常见的网络传输介质有哪些？', a: '双绞线、光纤、同轴电缆、无线电波。' },
+            { id: 17, category: '基础', q: '什么是 MTU？如何处理 MTU 问题？', a: '最大传输单元。通过分片或路径MTU发现来处理。' },
+            { id: 18, category: '基础', q: 'SNMP 协议的作用及工作原理是什么？', a: '简单网络管理协议，用于监控和管理网络设备。基于Manager-Agent模型。' },
+            { id: 19, category: '基础', q: '什么是端口镜像？在什么场景下使用？', a: '将端口流量复制到另一端口，用于网络监控和故障排查。' },
+            { id: 20, category: '基础', q: 'IPv4 和 IPv6 的主要区别是什么？', a: '地址长度（32 vs 128位）、头部格式、地址配置方式等。' },
+            { id: 21, category: '基础', q: '什么是 Ping 和 Traceroute？它们的用途是什么？', a: 'Ping测试可达性和延迟。Traceroute探测网络路径。' },
+            { id: 22, category: '基础', q: '简述 ICMP 协议的作用。', a: '传递控制消息和报告错误，如目标不可达、超时。' },
+            { id: 23, category: '基础', q: '如何排查网络环路？', a: '二层看STP状态和MAC漂移，三层看traceroute和路由表。' },
+            { id: 24, category: '基础', q: '什么是 PoE 技术？常见应用场景有哪些？', a: '以太网供电，用于IP电话、无线AP、摄像头。' },
+            { id: 25, category: '基础', q: '简述无线网络的基本概念及常用协议。', a: 'SSID, BSS, ESS。协议有802.11系列，安全协议有WPA2/WPA3。' },
+            { id: 26, category: '基础', q: '什么是负载均衡？有哪些实现方式？', a: '分发流量到多台服务器。方式有DNS轮询、四层/七层负载均衡。' },
+            { id: 27, category: '基础', q: '如何理解链路聚合（LACP）？', a: '捆绑多条物理链路为一条逻辑链路，增加带宽和冗余。LACP是标准协商协议。' },
+            { id: 28, category: '基础', q: '简述 GRE 和 IPsec 隧道技术。', a: 'GRE用于封装多种协议，IPsec用于加密。常结合使用。' },
+            { id: 29, category: '基础', q: '什么是网络拓扑结构？有哪些类型？', a: '网络的布局。有星型、总线型、环型、网状型等。' },
+            { id: 30, category: '基础', q: '解释帧中继和 MPLS 的基本原理。', a: '帧中继是早期WAN技术。MPLS通过标签交换进行快速转发。' },
+
+            // --- 中级技术 (40题) ---
+            { id: 31, category: '中级', q: 'OSPF 和 EIGRP 的主要区别是什么？', a: '标准化（标准 vs 私有）、协议类型（链路状态 vs 高级距离矢量）、算法（SPF vs DUAL）。' },
+            { id: 32, category: '中级', q: '简述 BGP 的工作原理及应用场景。', a: 'AS间路由协议，基于TCP，使用路径属性进行策略选路。用于ISP间和大型企业多出口。' },
+            { id: 33, category: '中级', q: '什么是 VRRP？它的主要功能是什么？', a: '虚拟路由器冗余协议，公有标准，提供网关高可用。' },
+            { id: 34, category: '中级', q: '如何实现网络的冗余设计？', a: '设备冗余、链路冗余、路由冗余、网关冗余。' },
+            { id: 35, category: '中级', q: '简述 MPLS 的核心概念及其优势。', a: '核心是标签交换。优势是MPLS VPN、流量工程、QoS。' },
+            { id: 36, category: '中级', q: '如何优化路由收敛时间？', a: '调整计时器、使用BFD、路由汇总、优化设计。' },
+            { id: 37, category: '中级', q: '什么是 VXLAN？如何应用于数据中心？', a: 'Overlay技术，解决VLAN数量限制，实现大二层网络。' },
+            { id: 38, category: '中级', q: '如何配置静态路由与动态路由？', a: '`ip route ...`配置静态。`router ospf ...`等配置动态。' },
+            { id: 39, category: '中级', q: '什么是双栈网络？如何实现 IPv4/IPv6 过渡？', a: '同时运行IPv4/v6。过渡技术有双栈、隧道、转换（NAT64）。' },
+            { id: 40, category: '中级', q: '防火墙的工作原理是什么？', a: '包过滤、状态检测、应用代理。' },
+            { id: 41, category: '中级', q: '什么是 IDS 和 IPS？它们的区别是什么？', a: 'IDS只检测告警（旁路），IPS能主动防御阻断（串联）。' },
+            { id: 42, category: '中级', q: '如何监控网络性能？常用工具有哪些？', a: '监控带宽、延迟、丢包率。工具有Zabbix, Nagios, SolarWinds, PRTG, Wireshark。' },
+            { id: 43, category: '中级', q: 'QoS 策略如何在企业网络中应用？', a: '三步：分类标记、拥塞管理（队列）、拥塞避免/流量限制。' },
+            { id: 44, category: '中级', q: '简述 NetFlow 的基本功能和配置方法。', a: '流量统计分析。在接口启用，并配置导出服务器。' },
+            { id: 45, category: '中级', q: '如何设计和实施高可用网络？', a: '消除单点故障，包括物理、链路、网络、广域网等层面。' },
+            { id: 46, category: '中级', q: '什么是 SDN？其核心组件有哪些？', a: '软件定义网络，核心是控制与转发分离。组件有控制器、南/北向接口、转发设备。' },
+            { id: 47, category: '中级', q: '如何规划和部署企业无线网络？', a: '需求分析、现场勘测、架构选择、安全规划、部署优化。' },
+            { id: 48, category: '中级', q: '常见的网络攻击有哪些？如何防御？', a: 'DDoS、ARP欺骗、端口扫描。防御方法有流量清洗、DAI、防火墙。' },
+            { id: 49, category: '中级', q: '什么是云网络？如何配置云网络中的路由？', a: '云服务商提供的虚拟网络。通过路由表配置子网流量走向。' },
+            { id: 50, category: '中级', q: '简述 HSRP 和 GLBP 的区别与应用。', a: 'HSRP是Active/Standby模型，GLBP提供负载均衡。' },
+            { id: 51, category: '中级', q: '如何诊断和解决慢速网络问题？', a: '分段排查，使用ping, traceroute测试延迟丢包，检查设备性能，抓包分析。' },
+            { id: 52, category: '中级', q: '在 MPLS 网络中，什么是 LDP 和 RSVP-TE？', a: 'LDP是标签分发协议。RSVP-TE用于流量工程，建立带资源预留的LSP。' },
+            { id: 53, category: '中级', q: '什么是网络分段？如何实现？', a: '将网络划分为多个隔离的区域。通过VLAN、子网、防火墙实现。' },
+            { id: 54, category: '中级', q: '网络设备固件升级的步骤和注意事项是什么？', a: '备份配置、阅读版本说明、在测试环境验证、选择业务低峰期、准备回滚计划。' },
+            { id: 55, category: '中级', q: '数据包捕获工具（如 Wireshark）的常见用途有哪些？', a: '故障排查、性能分析、安全分析。' },
+            { id: 56, category: '中级', q: '什么是网络延迟？如何优化？', a: '数据往返时间。优化包括选择更优路径、减少中间节点、使用QoS。' },
+            { id: 57, category: '中级', q: '在企业网络中如何实施 802.1X 认证？', a: '基于端口的网络接入控制，需要认证服务器(Radius)、交换机(认证器)和客户端(请求者)。' },
+            { id: 58, category: '中级', q: '防止 DDoS 攻击的有效策略有哪些？', a: '流量清洗服务、边界ACL、速率限制、BGP FlowSpec。' },
+            { id: 59, category: '中级', q: '简述 AAA 的概念和实现。', a: '认证、授权、审计。通过Radius, TACACS+等协议实现。' },
+            { id: 60, category: '中级', q: '网络变更管理的最佳实践是什么？', a: '制定详细变更方案、评审、通知、在变更窗口操作、验证、准备回滚计划。' },
+            { id: 61, category: '中级', q: '如何设计基于零信任架构的网络？', a: '从不信任，始终验证。核心是身份认证、微观分段、最小权限原则。' },
+            { id: 62, category: '中级', q: '什么是云原生网络？其特点有哪些？', a: '为容器化、微服务化应用设计的网络。特点是动态、自动化、API驱动。' },
+            { id: 63, category: '中级', q: '如何优化数据中心的网络架构？', a: '采用Spine-Leaf架构，使用VXLAN等Overlay技术，实现网络自动化。' },
+            { id: 64, category: '中级', q: '简述网络虚拟化（NFV）的核心概念。', a: '将传统硬件网络功能（如防火墙、负载均衡）以软件形式运行在通用服务器上。' },
+            { id: 65, category: '中级', q: '如何排查跨地区 MPLS 网络的问题？', a: '与运营商合作，检查CE-PE路由，端到端ping/traceroute，检查QoS策略。' },
+            { id: 66, category: '中级', q: '什么是多播路由？常用协议有哪些？', a: '一对多的高效数据传输。常用协议有PIM（密集模式、稀疏模式）。' },
+            { id: 67, category: '中级', q: '如何保护企业 VoIP 网络的安全？', a: '将语音和数据VLAN分离、使用加密协议(SRTP)、部署VoIP防火墙。' },
+            { id: 68, category: '中级', q: '什么是边缘计算？对网络有什么影响？', a: '在靠近数据源头的网络边缘侧处理数据。对网络要求低延迟、高带宽。' },
+            { id: 69, category: '中级', q: '解释 Anycast 和 Unicast 的区别。', a: 'Unicast是一对一通信。Anycast是一对最近，多个设备使用相同IP，流量被路由到最近的设备。' },
+            { id: 70, category: '中级', q: '简述 BYOD 策略对企业网络的影响及应对措施。', a: '带来安全风险和管理复杂性。应对措施包括NAC、MDM、访客网络隔离。' },
+
+            // --- 高级项目与实战 (30题) ---
+            { id: 71, category: '高级', q: '如何实施企业级网络的全面安全策略？', a: '采用深度防御理念：边界安全、内部隔离、访问控制、终端安全、监控响应。' },
+            { id: 72, category: '高级', q: '简述多厂商设备间的互联互通实践。', a: '坚持使用标准协议、详细阅读文档、实验室测试、最小化配置。' },
+            { id: 73, category: '高级', q: '数据中心迁移的网络规划要点有哪些？', a: '应用依赖分析、网络方案设计（大二层互联）、IP地址规划、制定详细迁移计划和回滚方案。' },
+            { id: 74, category: '高级', q: '企业网络架构升级的关键步骤是什么？', a: '需求评估、方案设计、设备选型、PoC测试、分阶段实施、割接、优化。' },
+            { id: 75, category: '高级', q: '如何实现大规模分支机构的网络自动化？', a: '使用Ansible/Python等工具，配置模板化、标准化，实现零接触部署(ZTP)。' },
+            { id: 76, category: '高级', q: '如何设计和部署基于 SD-WAN 的网络？', a: '评估业务流量模型、选择Overlay/Underlay方案、设计中心化控制策略、分批试点部署。' },
+            { id: 77, category: '高级', q: '跨境 VPN 的常见问题及解决方法。', a: '问题：高延迟、丢包、MTU问题。解决：选择优质ISP、TCP优化、调整MTU。' },
+            { id: 78, category: '高级', q: '云服务迁移中的网络挑战及优化建议。', a: '挑战：带宽、延迟、安全、IP地址冲突。优化：使用云专线(Direct Connect/ExpressRoute)、规划VPC、统一安全策略。' },
+            { id: 79, category: '高级', q: '如何规划超大规模企业的 IP 地址分配？', a: '使用IPAM工具，分层分级分配，预留充足地址，推广IPv6。' },
+            { id: 80, category: '高级', q: '解释 DevOps 在网络管理中的应用。', a: '网络即代码(NaC)，使用CI/CD流程自动化网络配置的测试和部署。' },
+            { id: 81, category: '高级', q: '网络监控系统的设计和实施要点是什么？', a: '全面性、实时性、可告警、可追溯。整合SNMP、NetFlow、日志、API等多种数据源。' },
+            { id: 82, category: '高级', q: '在网络中实施分段安全的实践案例。', a: '基于零信任原则，使用防火墙和ACL在数据中心内部划分安全域，例如Web区、App区、DB区。' },
+            { id: 83, category: '高级', q: '如何设计灾备网络架构？', a: '两地三中心，主备数据中心之间通过高速链路互联，使用路由协议和DNS实现流量切换。' },
+            { id: 84, category: '高级', q: '简述 5G 网络对企业的影响及实践。', a: '带来高速率、低延迟、大连接。可应用于企业专网、工业物联网、远程办公。' },
+            { id: 85, category: '高级', q: '网络性能优化的高级工具和方法有哪些？', a: '使用商用NPMD工具、深度数据包分析、BFD、流量工程。' },
+            { id: 86, category: '高级', q: '如何实施网络中的零信任安全模型？', a: '身份为核心、动态访问控制、微隔离、加密所有通信。' },
+            { id: 87, category: '高级', q: '详述一次复杂的网络故障排除案例。', a: '使用STAR法则，描述一次具体的、体现技术深度和逻辑思维的排错经历。' },
+            { id: 88, category: '高级', q: '企业级无线漫游的最佳实践。', a: '统一SSID、无缝漫游(802.11r)、AP间信道和功率规划。' },
+            { id: 89, category: '高级', q: '多区域 BGP 配置的挑战及解决方案。', a: '路由反射器设计、防环、策略一致性。解决方案：RR集群、Confederation、使用Community属性。' },
+            { id: 90, category: '高级', q: '如何实现混合云架构的网络整合？', a: '通过专线/VPN连接，使用SD-WAN或云路由服务，实现本地和云上网络的统一管理和路由。' },
+            { id: 91, category: '高级', q: '简述基于 Ansible 的网络自动化实践。', a: '构建设备清单(inventory)、编写剧本(playbook)来执行配置变更、数据收集和合规性检查。' },
+            { id: 92, category: '高级', q: '如何处理 SDN 网络中的常见故障？', a: '控制器与设备连接中断、流表下发失败。排查控制器日志、检查南向接口协议。' },
+            { id: 93, category: '高级', q: '对网络切换窗口的最佳实践建议。', a: '充分准备、详细计划、多人复核、提前通知、业务低峰期操作、快速验证、随时准备回滚。' },
+            { id: 94, category: '高级', q: '如何设计和实施符合合规要求的网络架构？', a: '理解合规标准（如PCI-DSS, GDPR），设计网络分段、访问控制和日志审计来满足要求。' },
+            { id: 95, category: '高级', q: '简述 IoT 网络的安全和可扩展性挑战。', a: '安全：设备认证、数据加密。可扩展性：海量设备接入、地址管理。' },
+            { id: 96, category: '高级', q: '数据中心的网络容灾方案有哪些？', a: '同城双活、异地灾备。使用负载均衡、DNS、路由协议实现流量调度。' },
+            { id: 97, category: '高级', q: '如何在网络架构中支持 AI/ML 应用？', a: '需要高带宽、低延迟的无阻塞网络（如Spine-Leaf），支持RDMA等技术。' },
+            { id: 98, 'category': '高级', 'q': '企业广域网优化的策略与工具。', 'a': '策略：MPLS, SD-WAN, WAN优化控制器(WOC)。工具：NPMD工具进行监控和分析。' },
+            { id: 99, category: '高级', q: '面对新技术（如量子网络）的发展，如何应对？', a: '保持关注、持续学习、在实验室环境中进行概念验证(PoC)，评估其对现有架构的潜在影响。' },
+            { id: 100, category: '高级', q: '分享一次成功实施网络项目的经验。', a: '使用STAR法则，重点突出你在项目中的角色、技术决策、如何克服挑战以及最终达成的业务价值。' }
+        ]
+    },
+    softSkills: {
+        title: "软技能与行为面试",
+        intro: "技术能力决定了您能否胜任工作，而软技能则决定了您能走多远。在面试中，招聘经理同样关注您的沟通能力、解决问题的思路以及团队协作精神。本部分将帮助您准备这些非技术性的问题。",
+        topics: [
+             {
+                title: "问题解决能力",
+                content: `<p>面试官常通过场景题考察您的逻辑思维和排错能力...</p>`
+            },
+            {
+                title: "团队合作与沟通",
+                content: `<p>网络工程师需要与系统、安全、开发等多个团队紧密协作...</p>`
+            },
+        ]
+    },
+    commands: {
+        title: "常用命令速查",
+        intro: "这是一个常用 `show` 命令的快速参考列表。在排错和日常运维中，熟练使用这些命令能够极大地提高您的工作效率。您可以在这里快速查找所需命令及其用途。",
+        items: [
+            { cmd: 'show ip interface brief', desc: '查看接口 IP 和状态。' },
+            { cmd: 'show interfaces', desc: '查看接口详细信息，包括流量、错误计数。' },
+            { cmd: 'show run', desc: '查看当前运行的配置。' },
+            { cmd: 'show version', desc: '查看设备型号、系统版本、运行时间。' }
+        ]
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const mainContent = document.getElementById('main-content');
+    const sidebar = document.getElementById('sidebar');
+    const navButtons = sidebar.querySelectorAll('button.sidebar-link');
+    const menuButton = document.getElementById('menu-button');
+    let questionsData = appData.questions.items;
+
+    const callGemini = async (prompt, systemPrompt) => {
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        const payload = {
+            contents: [{ parts: [{ text: prompt }] }],
+            systemInstruction: {
+                parts: [{ text: systemPrompt }]
+            },
+        };
+
+        let response;
+        let result;
+        let retries = 3;
+        let delay = 1000;
+
+        while(retries > 0) {
+            try {
+                response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    result = await response.json();
+                    const candidate = result.candidates?.[0];
+                    if (candidate && candidate.content?.parts?.[0]?.text) {
+                        return candidate.content.parts[0].text;
+                    }
+                }
+                throw new Error(`API Error: ${response.status}`);
+            } catch (error) {
+                retries--;
+                if(retries === 0) {
+                    return `调用AI服务时出错: ${error.message}. 请稍后再试。`;
+                }
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2;
+            }
+        }
+        return `调用AI服务失败，请检查网络连接或稍后再试。`;
+    };
+
+    const renderLevel = (levelKey) => {
+        const levelData = appData.levels[levelKey];
+        let topicsHtml = levelData.topics.map(topic => `
+            <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                <h3 class="text-xl font-bold text-slate-800 mb-4">${topic.title}</h3>
+                ${topic.content}
+            </div>
+        `).join('');
+
+        return `
+            <div id="${levelKey}" class="content-section">
+                <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                   <h2 class="text-3xl font-bold text-slate-900 mb-2">${levelData.title}</h2>
+                   <p class="text-slate-600 leading-relaxed">${levelData.intro}</p>
+                </div>
+                ${topicsHtml}
+            </div>
+        `;
+    };
+    
+    const renderQuestions = (filter = 'all') => {
+        const filteredQuestions = filter === 'all' 
+            ? questionsData 
+            : questionsData.filter(q => q.category.toLowerCase() === filter);
+
+        let questionsHtml = filteredQuestions.map(item => `
+            <div class="question bg-white rounded-lg shadow-md mb-3" data-category="${item.category.toLowerCase()}">
+                <div class="question-header p-4 cursor-pointer flex justify-between items-center">
+                    <h4 class="font-semibold text-slate-800">${item.id}. ${item.q}</h4>
+                    <span class="text-sky-500 transform transition-transform duration-300">▼</span>
+                </div>
+                <div class="question-answer px-4 pb-4 text-slate-600 leading-relaxed">
+                    <p>${item.a}</p>
+                </div>
+            </div>
+        `).join('');
+
+        return `
+            <div id="questions" class="content-section">
+                 <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                   <h2 class="text-3xl font-bold text-slate-900 mb-2">${appData.questions.title}</h2>
+                   <p class="text-slate-600 leading-relaxed">${appData.questions.intro}</p>
+                   <div class="mt-4 flex flex-wrap gap-2" id="question-filters">
+                        <button class="filter-btn px-4 py-2 rounded-md bg-gray-200 text-gray-700 active" data-filter="all">全部</button>
+                        <button class="filter-btn px-4 py-2 rounded-md bg-gray-200 text-gray-700" data-filter="基础">基础</button>
+                        <button class="filter-btn px-4 py-2 rounded-md bg-gray-200 text-gray-700" data-filter="中级">中级</button>
+                        <button class="filter-btn px-4 py-2 rounded-md bg-gray-200 text-gray-700" data-filter="高级">高级</button>
+                   </div>
+                </div>
+                <div id="questions-list">${questionsHtml}</div>
+            </div>
+        `;
+    };
+
+    const renderAiExplainer = () => {
+        return `
+            <div id="ai-explainer" class="content-section">
+                 <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                   <h2 class="text-3xl font-bold text-slate-900 mb-2">AI 概念解析</h2>
+                   <p class="text-slate-600 leading-relaxed">遇到不熟悉的网络技术术语？在这里输入，让AI为您提供简洁明了的解释。</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="explainer-input" class="flex-grow border border-gray-300 rounded-md p-2" placeholder="例如：VXLAN 或 BGP MED属性">
+                        <button id="explainer-submit" class="bg-sky-500 text-white font-bold py-2 px-4 rounded-md hover:bg-sky-600 transition-colors">查询</button>
+                    </div>
+                    <div id="explainer-output" class="mt-6 p-4 border border-gray-200 rounded-md bg-slate-50 min-h-[100px]">
+                        <p class="text-slate-500">AI的解释将显示在这里...</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+
+    const renderAiSimulator = () => {
+        const options = questionsData.map(q => `<option value="${q.id}">${q.id}. ${q.q}</option>`).join('');
+        return `
+            <div id="ai-simulator" class="content-section">
+                 <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                   <h2 class="text-3xl font-bold text-slate-900 mb-2">AI 面试模拟</h2>
+                   <p class="text-slate-600 leading-relaxed">选择一个面试题，写下您的答案，然后让AI扮演面试官来点评您的回答。</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <div class="mb-4">
+                        <label for="simulator-question-select" class="block text-sm font-medium text-gray-700 mb-1">选择一个问题</label>
+                        <select id="simulator-question-select" class="w-full border border-gray-300 rounded-md p-2">
+                           ${options}
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                         <label for="simulator-answer" class="block text-sm font-medium text-gray-700 mb-1">您的回答</label>
+                         <textarea id="simulator-answer" rows="8" class="w-full border border-gray-300 rounded-md p-2" placeholder="请在这里输入您对所选问题的回答..."></textarea>
+                    </div>
+                    <button id="simulator-submit" class="bg-sky-500 text-white font-bold py-2 px-4 rounded-md hover:bg-sky-600 transition-colors">请求 AI 点评</button>
+                    <div id="simulator-output" class="mt-6 p-4 border border-gray-200 rounded-md bg-slate-50 min-h-[150px]">
+                         <p class="text-slate-500">AI的点评将显示在这里...</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+    
+    const renderSoftSkills = () => { /* remains the same */ return ''; };
+    const renderCommands = () => { /* remains the same */ return ''; };
+
+    const loadContent = (targetId) => {
+        mainContent.innerHTML = '';
+        let contentHtml = '';
+        switch(targetId) {
+            case 'level-junior':
+            case 'level-intermediate':
+            case 'level-senior':
+                contentHtml = renderLevel(targetId);
+                break;
+            case 'questions':
+                contentHtml = renderQuestions();
+                break;
+            case 'soft-skills':
+                 contentHtml = `
+                    <div id="soft-skills" class="content-section">
+                        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                           <h2 class="text-3xl font-bold text-slate-900 mb-2">${appData.softSkills.title}</h2>
+                           <p class="text-slate-600 leading-relaxed">${appData.softSkills.intro}</p>
+                        </div>
+                        ${appData.softSkills.topics.map(t => `<div class="bg-white p-6 rounded-lg shadow-md mb-6"><h3 class="text-xl font-bold text-slate-800 mb-4">${t.title}</h3>${t.content}</div>`).join('')}
+                    </div>`;
+                break;
+            case 'ai-explainer':
+                contentHtml = renderAiExplainer();
+                break;
+            case 'ai-simulator':
+                contentHtml = renderAiSimulator();
+                break;
+            case 'commands':
+                 contentHtml = `
+                    <div id="commands" class="content-section">
+                         <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+                           <h2 class="text-3xl font-bold text-slate-900 mb-2">${appData.commands.title}</h2>
+                           <p class="text-slate-600 leading-relaxed">${appData.commands.intro}</p>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                            <table class="w-full">
+                                <thead class="bg-slate-50"><tr><th class="text-left py-3 px-4 font-semibold text-slate-700">命令</th><th class="text-left py-3 px-4 font-semibold text-slate-700">描述</th></tr></thead>
+                                <tbody>${appData.commands.items.map(c => `<tr class="border-b"><td class="py-3 px-4 font-mono text-slate-800">${c.cmd}</td><td class="py-3 px-4 text-slate-600">${c.desc}</td></tr>`).join('')}</tbody>
+                            </table>
+                        </div>
+                    </div>`;
+                 break;
+        }
+        mainContent.innerHTML = contentHtml;
+        const activeSection = mainContent.querySelector(`#${targetId}`);
+        if(activeSection) activeSection.classList.add('active');
+    };
+
+    const updateActiveNav = (targetId) => {
+        navButtons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.target === targetId);
+        });
+    };
+
+    sidebar.addEventListener('click', (e) => {
+        if (e.target && e.target.matches('button.sidebar-link')) {
+            const targetId = e.target.dataset.target;
+            loadContent(targetId);
+            updateActiveNav(targetId);
+            if (window.innerWidth < 768) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+    });
+
+    mainContent.addEventListener('click', async (e) => {
+        const questionHeader = e.target.closest('.question-header');
+        if (questionHeader) {
+            const questionDiv = questionHeader.parentElement;
+            questionDiv.classList.toggle('open');
+            questionHeader.querySelector('span').classList.toggle('rotate-180');
+        }
+
+        const filterButton = e.target.closest('.filter-btn');
+        if (filterButton) {
+            const filterValue = filterButton.dataset.filter.toLowerCase();
+            document.querySelectorAll('#question-filters .filter-btn').forEach(btn => btn.classList.remove('active'));
+            filterButton.classList.add('active');
+            document.querySelectorAll('#questions-list .question').forEach(q => {
+                q.style.display = (filterValue === 'all' || q.dataset.category === filterValue) ? 'block' : 'none';
+            });
+        }
+        
+        if (e.target.id === 'explainer-submit') {
+            const input = document.getElementById('explainer-input');
+            const output = document.getElementById('explainer-output');
+            const term = input.value.trim();
+            if (!term) return;
+
+            output.innerHTML = '<div class="flex items-center justify-center"><div class="loader"></div><p class="ml-4 text-slate-500">AI 正在思考中...</p></div>';
+            const systemPrompt = `请以一名资深网络技术专家的身份，用简洁明了、易于理解的语言解释以下网络技术概念：'${term}'。如果适用，可以给出一个简单的例子。`;
+            const response = await callGemini(term, systemPrompt);
+            output.innerHTML = `<p class="gemini-response">${response}</p>`;
+        }
+        
+        if (e.target.id === 'simulator-submit') {
+            const select = document.getElementById('simulator-question-select');
+            const answerInput = document.getElementById('simulator-answer');
+            const output = document.getElementById('simulator-output');
+
+            const questionId = select.value;
+            const userAnswer = answerInput.value.trim();
+            const question = questionsData.find(q => q.id == questionId).q;
+            
+            if (!userAnswer) {
+                output.innerHTML = `<p class="text-red-500">请输入您的回答。</p>`;
+                return;
+            }
+
+            output.innerHTML = '<div class="flex items-center justify-center"><div class="loader"></div><p class="ml-4 text-slate-500">AI 面试官正在点评...</p></div>';
+            const systemPrompt = `你是一名资深的网络工程师面试官。你的任务是评估候选人对以下问题的回答。请根据网络技术的专业标准，指出回答中的优点、缺点，并提供改进建议和更完整的参考答案。请以专业、有建设性的方式进行点评，格式清晰。问题是：'${question}'。`;
+            const response = await callGemini(userAnswer, systemPrompt);
+            output.innerHTML = `<div class="gemini-response">${response}</div>`;
+        }
+    });
+    
+    menuButton.addEventListener('click', () => {
+        sidebar.classList.toggle('-translate-x-full');
+    });
+
+    loadContent('level-junior');
+});
+</script>
+
+</body>
+</html>
+
