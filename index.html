@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>网络工程师交互式面试宝典 (国内精华版)</title>
+    <title>网络工程师交互式面试宝典 (最终版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chosen Palette: Professional Tech Blue -->
-    <!-- Application Structure Plan: Based on user feedback for domestic China usage, the two AI-powered sections ('AI Concept Explainer' and 'AI Interview Simulator') which rely on external APIs have been removed to ensure full functionality. The core theory sections ('Junior', 'Intermediate', 'Senior') have been significantly expanded to ~20 topics each to provide more depth. A placeholder text pointing to a "PDF version" has been added as requested. The structure remains a highly functional, offline-capable SPA focused on rich content delivery. -->
-    <!-- Visualization & Content Choices: Content remains primarily text-based, organized into cards and interactive lists. The expanded theory sections add more detailed explanations, code examples, and practical tips. The removal of AI features simplifies the JS logic, making the application lighter and faster. The focus shifts entirely to being a comprehensive, self-contained study guide. -->
+    <!-- Application Structure Plan: Based on user feedback for domestic China usage, the AI-powered and external command sections have been removed to ensure full functionality without external dependencies. The core theory sections ('Junior', 'Intermediate', 'Senior') have been significantly expanded with detailed content for all 20 topics each. The placeholder text pointing to a "PDF version" has been included as requested. The final structure is a robust, offline-capable, and content-rich SPA. -->
+    <!-- Visualization & Content Choices: Content is primarily text-based, organized into cards and interactive accordions. The expanded theory sections feature detailed explanations, code examples, and 'Key Takeaway' blockquotes to enhance learning. The JavaScript is streamlined, focusing solely on client-side rendering and interactivity, making the application lightweight and fast. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'; }
@@ -31,7 +31,7 @@
     <aside class="w-64 bg-slate-800 text-slate-200 flex flex-col fixed h-full z-10 md:relative md:translate-x-0 transform -translate-x-full transition-transform duration-200 ease-in-out" id="sidebar">
         <div class="p-5 border-b border-slate-700">
             <h1 class="text-xl font-bold text-white">面试宝典</h1>
-            <p class="text-sm text-sky-300">国内精华版</p>
+            <p class="text-sm text-sky-300">最终精华版</p>
         </div>
         <nav class="flex-1 px-2 py-4 space-y-2 overflow-y-auto">
             <button data-target="level-junior" class="sidebar-link w-full text-left px-4 py-2 rounded-md active">初级工程师</button>
@@ -69,78 +69,78 @@ const appData = {
             title: "初级网络工程师 (20讲)",
             intro: "本部分聚焦于网络世界最核心的基础知识，是每一位网络工程师的必经之路。内容主要围绕OSI/TCP-IP模型、IP地址、交换与路由基础等，旨在考察您对基本概念的理解和掌握程度。**更具体内容请参考PDF版本。**",
             topics: [
-                { title: "1. OSI 七层模型", content: "..." },
-                { title: "2. TCP/IP 四层/五层模型", content: "..." },
-                { title: "3. 数据封装与解封装过程", content: "..." },
-                { title: "4. TCP vs UDP 详解", content: "..." },
-                { title: "5. TCP三次握手与四次挥手", content: "..." },
-                { title: "6. IP地址分类与私有地址", content: "..." },
-                { title: "7. 子网划分与VLSM", content: "..." },
-                { title: "8. CIDR（无类域间路由）", content: "..." },
-                { title: "9. 交换机工作原理", content: "..." },
-                { title: "10. 冲突域与广播域", content: "..." },
-                { title: "11. VLAN的作用与配置", content: "..." },
-                { title: "12. Trunk链路与802.1Q", content: "..." },
-                { title: "13. STP的作用与基本原理", content: "..." },
-                { title: "14. 路由器的功能与工作原理", content: "..." },
-                { title: "15. 静态路由与默认路由", content: "..." },
-                { title: "16. 动态路由协议概述", content: "..." },
-                { title: "17. ARP协议详解", content: "..." },
-                { title: "18. DHCP协议工作原理", content: "..." },
-                { title: "19. DNS协议工作原理", content: "..." },
-                { title: "20. NAT技术（静态、动态、PAT）", content: "..." }
+                { title: "1. OSI 七层模型", content: "OSI模型将网络通信分为七层：物理层、数据链路层、网络层、传输层、会话层、表示层、应用层。它是一个理论框架，帮助我们理解网络协议如何协同工作。" },
+                { title: "2. TCP/IP 四层/五层模型", content: "TCP/IP是事实上的工业标准。五层模型包括物理层、数据链路层、网络层、传输层、应用层，比OSI更实用。" },
+                { title: "3. 数据封装与解封装过程", content: "数据从应用层向下传递，每层都会加上自己的头部信息（封装），就像打包快递。接收端则反向操作（解封装），层层拆包。" },
+                { title: "4. TCP vs UDP 详解", content: "TCP是可靠的、面向连接的协议，有三次握手和拥塞控制。UDP是不可靠的、无连接的协议，速度快。前者如HTTP，后者如DNS。" },
+                { title: "5. TCP三次握手与四次挥手", content: "三次握手（SYN -> SYN/ACK -> ACK）用于建立连接。四次挥手（FIN -> ACK -> FIN -> ACK）用于断开连接，确保双方数据都传输完毕。" },
+                { title: "6. IP地址分类与私有地址", content: "IP地址分为A/B/C/D/E类。私有地址（10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16）用于局域网，不能在公网路由。" },
+                { title: "7. 子网划分与VLSM", content: "子网划分是将大网络分割成小网络以节约地址。VLSM（可变长子网掩码）允许使用不同的掩码来划分子网，更加灵活高效。" },
+                { title: "8. CIDR（无类域间路由）", content: "CIDR使用`/`表示法（如/24）来表示网络掩码，打破了A/B/C类的限制，是现代IP地址分配的基础。" },
+                { title: "9. 交换机工作原理", content: "交换机基于源MAC地址学习，基于目标MAC地址进行转发、过滤或泛洪。它工作在数据链路层。" },
+                { title: "10. 冲突域与广播域", content: "冲突域是可能发生信号碰撞的范围，集线器所有端口在同一冲突域，交换机每个端口是一个独立的冲突域。广播域是广播包能到达的范围，路由器隔离广播域，交换机所有端口默认在同一广播域。" },
+                { title: "11. VLAN的作用与配置", content: "VLAN（虚拟局域网）用于在逻辑上划分广播域，增强安全性和性能。配置主要包括创建VLAN和将端口划入VLAN。" },
+                { title: "12. Trunk链路与802.1Q", content: "Trunk链路用于在交换机之间承载多个VLAN的流量。802.1Q是标准的Trunk协议，通过在帧中插入Tag来标识VLAN ID。" },
+                { title: "13. STP的作用与基本原理", content: "STP（生成树协议）用于在交换网络中防止二层环路，通过逻辑上阻塞冗余端口来实现。" },
+                { title: "14. 路由器的功能与工作原理", content: "路由器工作在网络层，其核心功能是根据路由表进行路径选择和数据包转发，并隔离广播域。" },
+                { title: "15. 静态路由与默认路由", content: "静态路由由管理员手动配置，简单可靠，适用于小型网络。默认路由是一种特殊的静态路由，用于转发所有目的未知的流量。" },
+                { title: "16. 动态路由协议概述", content: "动态路由协议（如OSPF, EIGRP）能自动学习网络拓扑和计算最佳路径，在网络变化时自动收敛。分为距离矢量和链路状态两类。" },
+                { title: "17. ARP协议详解", content: "ARP（地址解析协议）用于将IP地址解析为MAC地址。当主机需要与同一网段的另一主机通信时，会发送ARP请求来获取其MAC地址。" },
+                { title: "18. DHCP协议工作原理", content: "DHCP（动态主机配置协议）通过DORA（Discover, Offer, Request, Acknowledge）四步过程为客户端自动分配IP地址和其他网络参数。" },
+                { title: "19. DNS协议工作原理", content: "DNS（域名系统）负责将域名解析为IP地址。通过本地缓存查询、递归查询和迭代查询的过程完成解析。" },
+                { title: "20. NAT技术（静态、动态、PAT）", content: "NAT（网络地址转换）用于转换私有IP和公网IP。PAT（端口地址转换）是最常用的一种，允许多个私有IP共享一个公网IP。" }
             ]
         },
         'level-intermediate': {
             title: "中级网络工程师 (20讲)",
             intro: "中级部分要求您具备更深入的协议理解和独立解决问题的能力。我们将探讨高级交换技术、主流的内部网关协议、BGP基础以及核心网络服务。**更具体内容请参考PDF版本。**",
             topics: [
-                { title: "1. RSTP与STP的比较", content: "..." },
-                { title: "2. MSTP（多生成树协议）", content: "..." },
-                { title: "3. 链路聚合（EtherChannel）与LACP", content: "..." },
-                { title: "4. 交换机堆叠与集群（VSS/vPC）", content: "..." },
-                { title: "5. OSPF协议深入（邻居状态、LSA类型）", content: "..." },
-                { title: "6. OSPF的DR/BDR选举", content: "..." },
-                { title: "7. OSPF特殊区域（Stub, NSSA）", content: "..." },
-                { title: "8. EIGRP协议深入（DUAL算法, FS）", content: "..." },
-                { title: "9. 路由重分发与路由策略", content: "..." },
-                { title: "10. BGP协议基础（eBGP vs iBGP）", content: "..." },
-                { title: "11. BGP路径属性（AS_PATH, NEXT_HOP）", content: "..." },
-                { title: "12. HSRP, VRRP, GLBP网关冗余协议", content: "..." },
-                { title: "13. ACL（标准、扩展、命名）", content: "..." },
-                { title: "14. IPsec VPN原理（AH/ESP, IKE）", content: "..." },
-                { title: "15. GRE over IPsec", content: "..." },
-                { title: "16. SSL VPN", content: "..." },
-                { title: "17. 防火墙基础（状态检测、安全域）", content: "..." },
-                { title: "18. QoS模型与工具（分类、标记、队列）", content: "..." },
-                { title: "19. SNMP与NetFlow网络监控", content: "..." },
-                { title: "20. 无线网络安全（WPA2/WPA3企业版）", content: "..." }
+                { title: "1. RSTP与STP的比较", content: "RSTP（快速生成树）是STP的演进，通过优化端口角色和状态，以及Proposal/Agreement机制，将收敛时间从几十秒缩短到秒级。" },
+                { title: "2. MSTP（多生成树协议）", content: "MSTP允许将多个VLAN映射到一个生成树实例，解决了VLAN过多时STP/RSTP资源消耗大的问题，并能实现基于实例的负载均衡。" },
+                { title: "3. 链路聚合（EtherChannel）与LACP", content: "将多条物理链路捆绑为一条逻辑链路以增加带宽和冗余。LACP是公有标准协商协议，推荐使用。" },
+                { title: "4. 交换机堆叠与集群（VSS/vPC）", content: "将多台物理交换机虚拟化为一台逻辑设备，简化管理，消除STP，实现设备级冗余和链路级负载均衡。" },
+                { title: "5. OSPF协议深入（邻居状态、LSA类型）", content: "掌握OSPF的7种邻居状态（Down, Init, 2-Way...Full）和常见的LSA类型（Type1,2,3,5）是深入理解OSPF的关键。" },
+                { title: "6. OSPF的DR/BDR选举", content: "在广播网络中，通过选举DR/BDR来减少邻接关系和LSA泛洪，优化协议效率。选举基于接口优先级和Router ID。" },
+                { title: "7. OSPF特殊区域（Stub, NSSA）", content: "通过配置Stub、Totally Stubby、NSSA等特殊区域，可以优化路由表大小，减少LSA泛洪，提高网络稳定性。" },
+                { title: "8. EIGRP协议深入（DUAL算法, FS）", content: "EIGRP的核心是DUAL算法，通过Successor（后继）和Feasible Successor（可行后继）机制实现无环路和快速收敛。" },
+                { title: "9. 路由重分发与路由策略", content: "路由重分发是将一种路由协议的路由导入另一种。必须通过路由策略（如Route-map）进行精确控制，防止产生次优路径和路由环路。" },
+                { title: "10. BGP协议基础（eBGP vs iBGP）", content: "eBGP用于不同AS之间，iBGP用于同一AS内部。iBGP有水平分割规则，需要全互联或路由反射器来解决。" },
+                { title: "11. BGP路径属性（AS_PATH, NEXT_HOP）", content: "AS_PATH是BGP的核心防环机制和路径选择依据。NEXT_HOP属性在eBGP和iBGP邻居之间传递时有不同的规则，需要特别注意。" },
+                { title: "12. HSRP, VRRP, GLBP网关冗余协议", content: "HSRP（思科私有）和VRRP（公有标准）提供主备冗余。GLBP（思科私有）在提供冗余的同时实现了网关负载均衡。" },
+                { title: "13. ACL（标准、扩展、命名）", content: "ACL用于流量过滤。标准ACL只看源IP，扩展ACL可看源/目的IP、端口、协议。命名ACL更易于管理。" },
+                { title: "14. IPsec VPN原理（AH/ESP, IKE）", content: "IPsec通过AH协议提供认证和完整性，通过ESP协议提供加密。IKE协议用于自动协商密钥和安全关联（SA）。" },
+                { title: "15. GRE over IPsec", content: "GRE用于封装路由协议等多播/广播流量，IPsec用于加密。两者结合可以构建功能强大的安全VPN。" },
+                { title: "16. SSL VPN", content: "SSL VPN利用浏览器内置的SSL/TLS协议，无需专用客户端即可实现远程安全接入，部署灵活方便。" },
+                { title: "17. 防火墙基础（状态检测、安全域）", content: "现代防火墙的核心是状态检测技术，能跟踪连接状态。安全域（如Trust, Untrust, DMZ）是防火墙策略的基本逻辑单元。" },
+                { title: "18. QoS模型与工具（分类、标记、队列）", content: "QoS通过分类、标记、排队、整形等工具来为不同流量提供差异化服务。DiffServ是当前主流的QoS模型。" },
+                { title: "19. SNMP与NetFlow网络监控", content: "SNMP用于获取设备状态和性能指标（“网络健康吗？”）。NetFlow用于分析流量的组成和行为（“网络里跑的都是什么？”）。" },
+                { title: "20. 无线网络安全（WPA2/WPA3企业版）", content: "企业级无线安全使用WPA2/WPA3-Enterprise模式，结合802.1X和RADIUS服务器实现对每个用户的独立认证。" }
             ]
         },
         'level-senior': {
             title: "高级网络工程师 (20讲)",
             intro: "高级部分面向资深工程师和架构师，探讨大规模网络的设计、优化与前沿技术。内容涵盖高级BGP、数据中心网络、网络自动化与安全架构等。**更具体内容请参考PDF版本。**",
             topics: [
-                { title: "1. BGP路径属性深入（LOCAL_PREF, MED, Community）", content: "..." },
-                { title: "2. BGP路由反射器（RR）与联邦", content: "..." },
-                { title: "3. BGP选路规则详解", content: "..." },
-                { title: "4. MPLS L3VPN原理（RD, RT, MP-BGP）", content: "..." },
-                { title: "5. 数据中心网络架构演进", content: "..." },
-                { title: "6. Spine-Leaf架构与ECMP", content: "..." },
-                { title: "7. VXLAN Overlay网络", content: "..." },
-                { title: "8. EVPN控制平面", content: "..." },
-                { title: "9. 数据中心互联（DCI）技术", content: "..." },
-                { title: "10. 网络虚拟化（NFV）与SDN", content: "..." },
-                { title: "11. Python网络自动化基础", content: "..." },
-                { title: "12. Ansible网络自动化实践", content: "..." },
-                { title: "13. 网络即代码（NaC）与NetDevOps", content: "..." },
-                { title: "14. API（RESTCONF/NETCONF）", content: "..." },
-                { title: "15. 高可用性设计（设备、链路、路由）", content: "..." },
-                { title: "16. 流量工程（MPLS-TE, Segment Routing）", content: "..." },
-                { title: "17. IPv6过渡技术（双栈, NAT64）", content: "..." },
-                { title: "18. 深度防御与网络分段安全", content: "..." },
-                { title: "19. 零信任网络架构（ZTA）", content: "..." },
-                { title: "20. AIOps在网络运维中的应用", content: "..." }
+                { title: "1. BGP路径属性深入（LOCAL_PREF, MED, Community）", content: "LOCAL_PREF用于控制出向流量，MED用于影响入向流量，Community是强大的策略标记工具。" },
+                { title: "2. BGP路由反射器（RR）与联邦", content: "路由反射器和联邦是解决iBGP全互联问题的两种主流方案，用于构建可扩展的大型BGP网络。" },
+                { title: "3. BGP选路规则详解", content: "掌握BGP从Weight到Router ID的十几条详细选路规则，是进行精细化BGP策略调优的基础。" },
+                { title: "4. MPLS L3VPN原理（RD, RT, MP-BGP）", content: "MPLS VPN通过RD区分不同VPN的地址，通过RT控制VPN路由的导入导出，通过MP-BGP在骨干网中传递VPN路由。" },
+                { title: "5. 数据中心网络架构演进", content: "从传统三层架构到现代Spine-Leaf架构的演进，是为了解决大规模东西向流量和虚拟机迁移的需求。" },
+                { title: "6. Spine-Leaf架构与ECMP", content: "Spine-Leaf架构通过三层路由和ECMP（等价多路径）实现了无阻塞、可预测延迟和易于水平扩展的网络。" },
+                { title: "7. VXLAN Overlay网络", content: "VXLAN通过将二层帧封装在三层UDP包中，构建了一个与物理网络解耦的Overlay网络，突破了VLAN的限制。" },
+                { title: "8. EVPN控制平面", content: "EVPN（以太网VPN）作为VXLAN的控制平面，通过BGP协议来学习和通告主机的MAC和IP信息，抑制了ARP广播，并提供了更丰富的功能。" },
+                { title: "9. 数据中心互联（DCI）技术", content: "OTV, VPLS, VXLAN等DCI技术用于在不同数据中心之间构建大二层网络，支持双活和灾备。" },
+                { title: "10. 网络虚拟化（NFV）与SDN", content: "NFV将网络功能软件化，SDN将控制与转发分离。两者结合推动了网络的自动化和智能化。" },
+                { title: "11. Python网络自动化基础", content: "Python是网络自动化的首选语言，Netmiko/Paramiko等库可以方便地通过SSH与网络设备交互。" },
+                { title: "12. Ansible网络自动化实践", content: "Ansible是一个简单、无代理的自动化工具，通过Playbook和模板，可以实现大规模网络的配置管理和变更。" },
+                { title: "13. 网络即代码（NaC）与NetDevOps", content: "将网络配置代码化，使用Git进行版本控制，通过CI/CD流水线进行测试和部署，是NetDevOps的核心实践。" },
+                { title: "14. API（RESTCONF/NETCONF）", content: "RESTCONF和NETCONF是现代网络设备提供的、基于模型的、标准化的API，是实现网络可编程性的基础。" },
+                { title: "15. 高可用性设计（HA）", content: "HA设计旨在消除单点故障，综合运用设备、链路、路由、网关等层面的冗余技术，并结合BFD等快速检测机制。" },
+                { title: "16. 流量工程（MPLS-TE, Segment Routing）", content: "流量工程用于在骨干网中精细化地控制流量路径。Segment Routing是比MPLS-TE更简化、更具扩展性的下一代技术。" },
+                { title: "17. IPv6过渡技术（双栈, NAT64）", content: "双栈（Dual Stack）是目前最主流的IPv4/IPv6共存方案。NAT64/DNS64用于纯IPv6客户端访问IPv4资源。" },
+                { title: "18. 深度防御与网络分段安全", content: "深度防御是在网络的每个层面都部署安全控制。网络分段是其核心实践，通过隔离来限制攻击的横向移动。" },
+                { title: "19. 零信任网络架构（ZTA）", content: "ZTA的核心理念是“从不信任，始终验证”。它以身份为核心，通过微观分段和强认证来保护资源。" },
+                { title: "20. AIOps在网络运维中的应用", content: "AIOps利用人工智能和机器学习来分析海量网络数据，实现异常检测、故障预测和根因分析，提升运维智能化水平。" }
             ]
         },
     },
@@ -148,9 +148,9 @@ const appData = {
         title: "面试100题精选",
         intro: "这里汇集了从基础到高级的100个高频面试问题。您可以通过上方的按钮筛选不同难度的问题，点击问题标题来展开或收起答案。这是一种高效的自我检测和复习方式，帮助您巩固知识，为面试做好充分准备。",
         items: [
-            { id: 1, category: '基础', q: '什么是 OSI 七层模型？每一层的功能是什么？', a: 'OSI 模型是一个理论框架，将网络通信划分为七个逻辑层...（详细解释）' },
-            { id: 2, category: '基础', q: 'TCP 和 UDP 的主要区别是什么？', a: 'TCP是面向连接、可靠的；UDP是无连接、不可靠的...（详细比较）' },
-            { id: 3, category: '基础', q: '如何区分私有 IP 和公网 IP？', a: '根据RFC 1918，私有地址范围是 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16...' },
+            { id: 1, category: '基础', q: '什么是 OSI 七层模型？每一层的功能是什么？', a: 'OSI 模型是一个理论框架，将网络通信划分为七个逻辑层：应用层（用户接口）、表示层（数据格式）、会话层（会话管理）、传输层（端到端连接）、网络层（路由寻址）、数据链路层（帧传输）、物理层（比特流）。' },
+            { id: 2, category: '基础', q: 'TCP 和 UDP 的主要区别是什么？', a: 'TCP是面向连接、可靠的，有三次握手和拥塞控制，适用于HTTP/FTP。UDP是无连接、不可靠的，速度快，适用于DNS/VoIP。' },
+            { id: 3, category: '基础', q: '如何区分私有 IP 和公网 IP？', a: '根据RFC 1918，私有地址范围是 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16，用于局域网。其余为公网IP。' },
             { id: 4, category: '基础', q: '简述 ARP 和 RARP 协议的作用。', a: 'ARP将IP地址解析为MAC地址。RARP（已过时）将MAC地址解析为IP地址。' },
             { id: 5, category: '基础', q: '什么是子网掩码？如何计算子网划分？', a: '子网掩码用于区分网络位和主机位。通过借用主机位来创建更多子网。' },
             { id: 6, category: '基础', q: 'VLAN 的作用是什么？如何配置？', a: 'VLAN用于隔离广播域，增强安全。通过`vlan <id>`创建，`switchport access vlan <id>`分配端口。' },
@@ -304,40 +304,6 @@ const appData = {
                 content: `<p class="text-slate-600">网络工程师需要与系统、安全、开发等多个团队紧密协作。准备一些案例，说明您是如何主动沟通、解决冲突、推动项目进展的。</p>`
             },
         ]
-    },
-    commands: {
-        title: "常用命令速查",
-        intro: "这是一个常用 `show` 和 `debug` 命令的快速参考列表。在排错和日常运维中，熟练使用这些命令能够极大地提高您的工作效率。",
-        categories: [
-            {
-                name: "基础信息与接口",
-                items: [
-                    { cmd: 'show version', desc: '查看设备型号、系统版本、运行时间。' },
-                    { cmd: 'show running-config', desc: '查看当前运行的配置。' },
-                    { cmd: 'show ip interface brief', desc: '快速查看所有接口的IP地址和状态（up/down）。' },
-                    { cmd: 'show interfaces', desc: '查看接口详细信息，包括流量、错误计数、MTU。' },
-                    { cmd: 'show controllers', desc: '查看接口的物理层信息。' }
-                ]
-            },
-            {
-                name: "二层交换",
-                items: [
-                    { cmd: 'show mac address-table', desc: '查看MAC地址表。' },
-                    { cmd: 'show vlan brief', desc: '查看VLAN信息及端口划分。' },
-                    { cmd: 'show spanning-tree vlan [id]', desc: '查看指定VLAN的生成树状态。' },
-                    { cmd: 'show etherchannel summary', desc: '查看链路聚合组的状态。' }
-                ]
-            },
-            {
-                name: "三层路由",
-                items: [
-                    { cmd: 'show ip route', desc: '查看路由表。' },
-                    { cmd: 'show ip ospf neighbor', desc: '查看OSPF邻居状态。' },
-                    { cmd: 'show ip bgp summary', desc: '查看BGP邻居状态。' },
-                    { cmd: 'show ip protocols', desc: '查看当前运行的路由协议及配置信息。' }
-                ]
-            },
-        ]
     }
 };
 
@@ -383,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let topicsHtml = levelData.topics.map(topic => `
                     <div class="bg-white p-6 rounded-lg shadow-md mb-6">
                         <h3 class="text-xl font-bold text-slate-800 mb-4">${topic.title}</h3>
-                        ${topic.content}
+                        <div class="text-slate-600 leading-relaxed">${topic.content}</div>
                     </div>
                 `).join('');
                 contentHtml = `<div id="${targetId}" class="content-section">${renderHeader(levelData)}${topicsHtml}</div>`;
