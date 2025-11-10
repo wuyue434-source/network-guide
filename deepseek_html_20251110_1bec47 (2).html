@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YESLAB新网工 - 网络工程师实战课程</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ed 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            overflow: hidden;
+            position: relative;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            font-size: 2.2rem;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .tab {
+            padding: 12px 24px;
+            margin: 5px 10px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .tab:hover {
+            background: #e9ecef;
+            transform: translateY(-3px);
+        }
+        .tab.active {
+            background: #3498db;
+            color: white;
+            border-color: #3498db;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 18px;
+            text-align: center;
+            border: 1px solid #e1e1e1;
+            transition: all 0.3s ease;
+        }
+        .comparison-table th {
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .comparison-table th::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(255,255,255,0.1), rgba(0,0,0,0.1));
+            pointer-events: none;
+        }
+        .package-1 {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+        }
+        .package-2 {
+            background: linear-gradient(135deg, #16a085, #1abc9c);
+        }
+        .package-3 {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+        }
+        .package-4 {
+            background: linear-gradient(135deg, #d35400, #e67e22);
+        }
+        .comparison-table tr {
+            transition: all 0.5s ease;
+        }
+        .comparison-table tr.hidden {
+            display: none;
+        }
+        .comparison-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .comparison-table tr:hover {
+            background-color: #e8f4fc;
+        }
+        .module-name {
+            text-align: left;
+            font-weight: 600;
+            background-color: #f1f8ff;
+            color: #2c3e50;
+            border-left: 4px solid #3498db;
+            word-break: break-word;
+            white-space: normal;
+            cursor: pointer;
+            position: relative;
+        }
+        .module-name:hover {
+            background-color: #e1f0fa;
+            transform: translateX(5px);
+        }
+        .module-code {
+            display: block;
+            font-weight: 700;
+            color: #2980b9;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        .module-desc {
+            display: block;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        .m3-desc {
+            display: inline-block;
+            max-width: 100%;
+            word-break: break-word;
+            white-space: normal;
+            line-height: 1.4;
+        }
+        .checkmark {
+            color: #27ae60;
+            font-weight: bold;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+        .checkmark:hover {
+            transform: scale(1.3);
+        }
+        .learning-objective {
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        .package-title h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .package-title p {
+            margin: 5px 0 0;
+            font-size: 14px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        .footer-note {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 14px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .copyright {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            color: #7f8c8d;
+            font-size: 16px;
+            font-weight: 500;
+            border-top: 1px solid #eee;
+        }
+        .highlight {
+            background-color: #fff9e6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        /* 详情面板样式 */
+        .detail-panel {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 30px;
+            overflow-y: auto;
+            transition: right 0.4s ease;
+        }
+        .detail-panel.active {
+            right: 0;
+        }
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+        .detail-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+            transition: color 0.3s;
+        }
+        .close-btn:hover {
+            color: #e74c3c;
+        }
+        .detail-content {
+            line-height: 1.7;
+        }
+        .detail-content h3 {
+            margin: 20px 0 10px;
+            color: #3498db;
+            font-size: 1.2rem;
+        }
+        .course-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        .course-item {
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+            transition: all 0.2s;
+        }
+        .course-item:hover {
+            background: #e8f4fc;
+            transform: translateX(3px);
+        }
+        .course-number {
+            font-weight: bold;
+            color: #2980b9;
+            margin-right: 8px;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        .overlay.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .comparison-table {
+                font-size: 14px;
+            }
+            .comparison-table th, .comparison-table td {
+                padding: 12px 8px;
+            }
+            .package-title h3 {
+                font-size: 16px;
+            }
+            .package-title p {
+                font-size: 12px;
+            }
+            .module-code {
+                font-size: 14px;
+            }
+            .module-desc {
+                font-size: 12px;
+            }
+            .detail-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>YESLAB新网工 - 网络工程师实战课程</h1>
+        <div class="subtitle">学习模块如积木随意搭配组合，打造专属你的成长路径</div>
+        
+        <div class="tabs">
+            <div class="tab active" data-level="all">全部课程</div>
+            <div class="tab" data-level="basic">基础课程</div>
+            <div class="tab" data-level="advanced">进阶课程</div>
+            <div class="tab" data-level="expert">专家课程</div>
+        </div>
+        
+        <table class="comparison-table">
+            <thead>
+                <tr>
+                    <th width="20%">学习模块</th>
+                    <th width="20%" class="package-1">
+                        <div class="package-title">
+                            <h3>网工全栈大师</h3>
+                            <p>传统+数据中心+广域承载</p>
+                        </div>
+                    </th>
+                    <th width="20%" class="package-2">
+                        <div class="package-title">
+                            <h3>云数据中心专家</h3>
+                            <p>云网融合+SDN技术</p>
+                        </div>
+                    </th>
+                    <th width="20%" class="package-3">
+                        <div class="package-title">
+                            <h3>高级网络规划专家</h3>
+                            <p>规划+自动化+设计</p>
+                        </div>
+                    </th>
+                    <th width="20%" class="package-4">
+                        <div class="package-title">
+                            <h3>企业网络全覆盖</h3>
+                            <p>全链路全能型</p>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-level="basic">
+                    <td class="module-name" data-module="m1">
+                        <span class="module-code">M1</span>
+                        <span class="module-desc">传统园区网项目案例</span>
+                    </td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="checkmark">✓</span></td>
+                </tr>
+                <tr data-level="basic">
+                    <td class="module-name" data-module="m2">
+                        <span class="module-code">M2</span>
+                        <span class="module-desc">广域互联项目案例</span>
+                    </td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="checkmark">✓</span></td>
+                </tr>
+                <tr data-level="advanced">
+                    <td class="module-name" data-module="m3">
+                        <span class="module-code">M3</span>
+                        <span class="module-desc m3-desc">数据中心EVPN VXLAN<br>项目案例</span>
+                    </td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td></td>
+                    <td><span class="checkmark">✓</span></td>
+                </tr>
+                <tr data-level="advanced">
+                    <td class="module-name" data-module="m4">
+                        <span class="module-code">M4</span>
+                        <span class="module-desc">数据中心云操作系统(OpenStack)</span>
+                    </td>
+                    <td></td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td></td>
+                    <td><span class="checkmark">✓</span></td>
+                </tr>
+                <tr data-level="expert">
+                    <td class="module-name" data-module="m5">
+                        <span class="module-code">M5</span>
+                        <span class="module-desc">华为SD-WAN项目案例</span>
+                    </td>
+                    <td></td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td><span class="checkmark">✓</span></td>
+                </tr>
+                <tr data-level="expert">
+                    <td class="module-name" data-module="m6">
+                        <span class="module-code">M6</span>
+                        <span class="module-desc">华为自动驾驶网络项目案例</span>
+                    </td>
+                    <td></td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td><span class="checkmark">✓</span></td>
+                </tr>
+                <tr data-level="expert">
+                    <td class="module-name" data-module="m7">
+                        <span class="module-code">M7</span>
+                        <span class="module-desc">广域承载网络与SR技术</span>
+                    </td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td></td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td><span class="checkmark">✓</span></td>
+                </tr>
+                <tr data-level="advanced">
+                    <td class="module-name" data-module="m8">
+                        <span class="module-code">M8</span>
+                        <span class="module-desc">网络编程与自动化运维</span>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td><span class="checkmark">✓</span></td>
+                </tr>
+                <tr data-level="expert">
+                    <td class="module-name" data-module="m9">
+                        <span class="module-code">M9</span>
+                        <span class="module-desc">企业网络架构设计与项目规划</span>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td><span class="checkmark">✓</span></td>
+                    <td><span class="checkmark">✓</span></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="learning-objective">
+            <h3>学习目标详情：</h3>
+            <p><strong class="highlight">网工全栈大师：</strong> 掌握传统园区网、广域互联、数据中心基础及广域承载网核心技术，能独立完成中小型企业网络部署。</p>
+            <p><strong class="highlight">云数据中心专家：</strong> 精通EVPN VXLAN数据中心网络、私有云OpenStack部署、SD-WAN及自动驾驶网络能力。</p>
+            <p><strong class="highlight">高级网络规划专家：</strong> 掌握高级SD-WAN/ADN规划、SRv6承载网、网络自动化及企业网络方案设计能力。</p>
+            <p><strong class="highlight">企业网络全覆盖：</strong> 全面掌握园区网、数据中心、广域网、安全及自动化，全链路能力，成为全能型网络工程师。</p>
+        </div>
+        
+        <div class="footer-note">
+            <p>✓ 表示该套餐包含此学习模块 | 所有套餐均可根据个人需求进行定制调整</p>
+        </div>
+        
+        <div class="copyright">
+            ©️ YESLAB新网工
+        </div>
+    </div>
+    
+    <!-- 详情面板 -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-header">
+            <h2 class="detail-title" id="detailTitle">模块详情</h2>
+            <button class="close-btn" id="closeDetail">×</button>
+        </div>
+        <div class="detail-content" id="detailContent">
+            <!-- 内容将通过JavaScript动态填充 -->
+        </div>
+    </div>
+    
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay"></div>
+
+    <script>
+        // 模块详情数据
+        const moduleDetails = {
+            m1: {
+                title: "M1 - 传统园区网项目案例",
+                content: `
+                    <h3>课程概述</h3>
+                    <p>本模块涵盖企业网络中最常见的园区网场景，通过真实项目案例教学，帮助学员掌握从基础到高级的园区网设计与实施。</p>
+                    
+                    <h3>课程内容</h3>
+                    <div class="course-list">
+                        <div class="course-item"><span class="course-number">1.</span> 项目案例1-企业网络PPPOE对接运营商</div>
+                        <div class="course-item"><span class="course-number">2.</span> 项目案例2-企业设备割接项目案例</div>
+                        <div class="course-item"><span class="course-number">3.</span> 项目案例3-企业总部和分支互联VPN</div>
+                        <div class="course-item"><span class="course-number">4.</span> 项目案例4-企业网络抓包故障排除案例</div>
+                        <div class="course-item"><span class="course-number">5.</span> 项目案例5-无线AP升级案例</div>
+                        <div class="course-item"><span class="course-number">6.</span> 项目案例6-企业多ISP出口部署方案</div>
+                        <div class="course-item"><span class="course-number">7.</span> 项目案例7-思科设备和华为设备对接IPsec VPN方案</div>
+                        <div class="course-item"><span class="course-number">8.</span> 项目案例8-mux vlan&supper vlan项目案例</div>
+                        <div class="course-item"><span class="course-number">9.</span> 项目案例9-IPv6网络（子网划分）的规划</div>
+                        <div class="course-item"><span class="course-number">10.</span> 项目案例10-企业网络架构总体设计</div>
+                        <div class="course-item"><span class="course-number">11.</span> 项目案例11-组网物理连接相关</div>
+                        <div class="course-item"><span class="course-number">12.</span> 项目案例12-网工需要了解的仪表</div>
+                        <div class="course-item"><span class="course-number">13.</span> 项目案例13-双向NAT解决地址重叠问题</div>
+                        <div class="course-item"><span class="course-number">14.</span> 项目案例14-异网DHCP案例</div>
+                        <div class="course-item"><span class="course-number">15.</span> 小型企业网络项目实战</div>
+                        <div class="course-item"><span class="course-number">16.</span> 企业网络隔离(VRF)+防火墙（VFW）旁挂项目案例（静态路由、OSPF）</div>
+                        <div class="course-item"><span class="course-number">17.</span> 企业三层架构网络组网的实施案例</div>
+                        <div class="course-item"><span class="course-number">18.</span> 企业IPv6站点互访VPN+IPsec保护</div>
+                        <div class="course-item"><span class="course-number">19.</span> 企业NAT64项目案例</div>
+                        <div class="course-item"><span class="course-number">20.</span> 企业IPv6无线组网案例</div>
+                        <div class="course-item"><span class="course-number">21.</span> 企业IPsec VPN+出口NAT案例</div>
+                        <div class="course-item"><span class="course-number">22.</span> 企业IPsec VPN 模版方式+NAT穿越</div>
+                        <div class="course-item"><span class="course-number">23.</span> 大中型企业网络项目实战堆叠+FW双机热备（路由模式）</div>
+                        <div class="course-item"><span class="course-number">24.</span> 大中型企业网络项目实战MSTP+VRRP+FW双机热备（透明模式）</div>
+                        <div class="course-item"><span class="course-number">25.</span> 某医院的外网改造项目案例（简单拓扑）</div>
+                        <div class="course-item"><span class="course-number">26.</span> 某医院的外网改造项目案例（复杂优化拓扑）</div>
+                        <div class="course-item"><span class="course-number">27.</span> 某妇幼医院网络改造项目案例（H3C设备实施）</div>
+                        <div class="course-item"><span class="course-number">28.</span> 某小型企业网络典型组网实施</div>
+                        <div class="course-item"><span class="course-number">29.</span> 上网行为管理+FW双设备旁挂绕行项目案例</div>
+                        <div class="course-item"><span class="course-number">30.</span> 某实验考试试题讲解上</div>
+                        <div class="course-item"><span class="course-number">31.</span> 内网穿透技术应用</div>
+                        <div class="course-item"><span class="course-number">32.</span> 企业园区网络单出口FW项目案例</div>
+                        <div class="course-item"><span class="course-number">33.</span> 企业园区网络FW+路由器项目案例</div>
+                        <div class="course-item"><span class="course-number">34.</span> 企业园区网络扩容防火墙项目案例（透明模式）</div>
+                        <div class="course-item"><span class="course-number">35.</span> 企业园区网络扩容防火墙项目案例（旁挂）</div>
+                        <div class="course-item"><span class="course-number">36.</span> IPsec VPN模版方式案例</div>
+                        <div class="course-item"><span class="course-number">37.</span> IPsec VPN多分支场景（固定+非固定地址+NAT旁路）</div>
+                        <div class="course-item"><span class="course-number">38.</span> 真机综合项目实战1（堆叠+FW双机热备）</div>
+                        <div class="course-item"><span class="course-number">39.</span> 真机综合项目实战1（无线网络部署+设备带内管理规划）</div>
+                        <div class="course-item"><span class="course-number">40.</span> 真机综合项目实战2（MSTP+VRRP+FW透明模式双机热备）</div>
+                        <div class="course-item"><span class="course-number">41.</span> 真机综合项目实战2（MSTP+VRRP+FW透明模式双机热备）</div>
+                        <div class="course-item"><span class="course-number">42.</span> 真机综合项目实战2（MSTP+VRRP+FW透明模式双机热备）</div>
+                        <div class="course-item"><span class="course-number">43.</span> 三层架构网络组网案例（上）</div>
+                        <div class="course-item"><span class="course-number">44.</span> 三层架构网络组网案例（下）</div>
+                    </div>
+                    
+                    <h3>学习目标</h3>
+                    <p>掌握传统园区网设计、部署与故障排除的核心技能，能够独立完成中小型企业园区网络的建设与维护。</p>
+                    
+                    <h3>适合人群</h3>
+                    <p>网络工程师、系统工程师、IT运维人员、网络专业学生</p>
+                `
+            },
+            m2: {
+                title: "M2 - 广域互联项目案例",
+                content: `
+                    <h3>课程概述</h3>
+                    <p>本模块深入讲解广域网互联技术，重点聚焦MPLS VPN在企业网络中的应用，通过实际案例帮助学员掌握跨地域网络互联方案。</p>
+                    
+                    <h3>课程内容</h3>
+                    <div class="course-list">
+                        <div class="course-item"><span class="course-number">1.</span> 域内MPLS L3VPN项目案例</div>
+                        <div class="course-item"><span class="course-number">2.</span> 域内MPLS L2VPN（VPLS两种方式）项目案例</div>
+                        <div class="course-item"><span class="course-number">3.</span> 域内MPLS L3VPN HUB SPOKE项目案例</div>
+                        <div class="course-item"><span class="course-number">4.</span> 跨域MPLS L3VPN OptionA项目案例</div>
+                        <div class="course-item"><span class="course-number">5.</span> 跨域MPLS L3VPN OptionB项目案例</div>
+                        <div class="course-item"><span class="course-number">6.</span> 跨域MPLS L3VPN OptionC方式1项目案例</div>
+                        <div class="course-item"><span class="course-number">7.</span> 跨域MPLS L3VPN OptionC方式2项目案例</div>
+                    </div>
+                    
+                    <h3>学习目标</h3>
+                    <p>掌握MPLS VPN技术的原理与实施，能够设计并部署企业级广域网互联方案，解决跨地域网络连接问题。</p>
+                    
+                    <h3>适合人群</h3>
+                    <p>网络工程师、网络架构师、运营商技术人员</p>
+                `
+            },
+            m3: {
+                title: "M3 - 数据中心EVPN VXLAN项目案例",
+                content: `
+                    <h3>课程概述</h3>
+                    <p>本模块聚焦现代数据中心网络核心技术EVPN VXLAN，通过实际项目案例教学，帮助学员掌握云数据中心网络的设计与实施。</p>
+                    
+                    <h3>课程内容</h3>
+                    <div class="course-list">
+                        <div class="course-item"><span class="course-number">1.</span> 静态VXLAN项目案例</div>
+                        <div class="course-item"><span class="course-number">2.</span> 静态VXLAN集中式网关项目案例</div>
+                        <div class="course-item"><span class="course-number">3.</span> BGP EVPN项目案例</div>
+                        <div class="course-item"><span class="course-number">4.</span> BGP EVPN集中式网关项目案例</div>
+                        <div class="course-item"><span class="course-number">5.</span> BGP EVPN分布式网关项目案例</div>
+                        <div class="course-item"><span class="course-number">6.</span> BGP EVPN引入外部路由项目案例</div>
+                    </div>
+                    
+                    <h3>学习目标</h3>
+                    <p>掌握EVPN VXLAN技术的原理与部署，能够设计并实施现代数据中心overlay网络，支持虚拟机迁移和多租户环境。</p>
+                    
+                    <h3>适合人群</h3>
+                    <p>数据中心工程师、云网络工程师、网络架构师</p>
+                `
+            },
+            m4: {
+                title: "M4 - 数据中心云操作系统(OpenStack)",
+                content: `
+                    <h3>课程概述</h3>
+                    <p>本模块介绍OpenStack云操作系统的部署与管理，重点讲解网络组件Neutron的使用，帮助学员理解云平台与底层网络的集成。</p>
+                    
+                    <h3>课程内容</h3>
+                    <div class="course-list">
+                        <div class="course-item"><span class="course-number">0.</span> 云操作系统OpenStack的搭建</div>
+                        <div class="course-item"><span class="course-number">1.</span> 用户/用户组/项目的相关操作</div>
+                        <div class="course-item"><span class="course-number">2.</span> 镜像管理</div>
+                        <div class="course-item"><span class="course-number">3.</span> 虚拟机的创建/删除/快照管理</div>
+                        <div class="course-item"><span class="course-number">4.</span> 块存储的管理</div>
+                        <div class="course-item"><span class="course-number">5.</span> 网络的基本设置（网络/路由器/安全组）</div>
+                        <div class="course-item"><span class="course-number">6.</span> heat模板的使用基础</div>
+                    </div>
+                    
+                    <h3>学习目标</h3>
+                    <p>掌握OpenStack云平台的部署与管理，理解云网络架构，能够为云环境提供网络服务支持。</p>
+                    
+                    <h3>适合人群</h3>
+                    <p>云计算工程师、网络工程师、系统管理员</p>
+                `
+            },
+            m5: {
+                title: "M5 - 华为SD-WAN项目案例",
+                content: `
+                    <h3>课程概述</h3>
+                    <p>本模块基于华为iMaster控制器，讲解SD-WAN网络的设计、部署与运维，帮助学员掌握下一代广域网技术。</p>
+                    
+                    <h3>课程内容</h3>
+                    <div class="course-list">
+                        <div class="course-item"><span class="course-number">1.</span> SD WAN网络设计及实施</div>
+                        <div class="course-item"><span class="course-number">2.</span> SD WAN网络开局及实施</div>
+                        <div class="course-item"><span class="course-number">3.</span> SD WAN组网设计及站点设计及实施</div>
+                        <div class="course-item"><span class="course-number">4.</span> SD WAN隧道设计及VPN设计及实施</div>
+                        <div class="course-item"><span class="course-number">5.</span> SD WAN业务设计及实施</div>
+                        <div class="course-item"><span class="course-number">6.</span> SD WAN可靠性设计及实施</div>
+                    </div>
+                    
+                    <h3>学习目标</h3>
+                    <p>掌握SD-WAN技术的原理与部署，能够使用华为iMaster控制器设计和实施企业级SD-WAN网络。</p>
+                    
+                    <h3>适合人群</h3>
+                    <p>网络工程师、网络架构师、SD-WAN工程师</p>
+                `
+            },
+            m6: {
+                title: "M6 - 华为自动驾驶网络项目案例",
+                content: `
+                    <h3>课程概述</h3>
+                    <p>本模块基于华为iMaster控制器，讲解自动驾驶网络的设计与实施，帮助学员掌握网络自动化和智能运维技术。</p>
+                    
+                    <h3>课程内容</h3>
+                    <div class="course-list">
+                        <div class="course-item"><span class="course-number">1.</span> 园区网络自动化开局设计及实施</div>
+                        <div class="course-item"><span class="course-number">2.</span> 网络架构设计及实施</div>
+                        <div class="course-item"><span class="course-number">3.</span> Underlay网络设计及实施</div>
+                        <div class="course-item"><span class="course-number">4.</span> Fabric与overlay网络设计及实施</div>
+                        <div class="course-item"><span class="course-number">5.</span> 准入控制及业务随行设计及实施</div>
+                        <div class="course-item"><span class="course-number">6.</span> VXLAN虚拟化园区网络完整部署实施</div>
+                    </div>
+                    
+                    <h3>学习目标</h3>
+                    <p>掌握自动驾驶网络技术的原理与部署，能够使用华为iMaster控制器实现网络自动化运维。</p>
+                    
+                    <h3>适合人群</h3>
+                    <p>网络工程师、网络自动化工程师、网络运维人员</p>
+                `
+            },
+            m7: {
+                title: "M7 - 广域承载网络与SR技术",
+                content: `
+                    <h3>课程概述</h3>
+                    <p>本模块深入讲解广域承载网络技术，重点聚焦Segment Routing (SR)在MPLS和IPv6环境中的应用。</p>
+                    
+                    <h3>课程内容</h3>
+                    <div class="course-list">
+                        <div class="course-item"><span class="course-number">1.</span> 基于SR BE的L3VPN项目案例</div>
+                        <div class="course-item"><span class="course-number">2.</span> 基于SR MPLS TE的L3VPN项目案例</div>
+                        <div class="course-item"><span class="course-number">3.</span> SR MPLS Policy L3VPN项目案例</div>
+                        <div class="course-item"><span class="course-number">4.</span> SRv6 BE L3VPN项目案例</div>
+                        <div class="course-item"><span class="course-number">5.</span> L3VPN over SRv6 TE Policy项目案例</div>
+                        <div class="course-item"><span class="course-number">6.</span> L3VPN EVPN over SRv6 Policy项目案例</div>
+                    </div>
+                    
+                    <h3>学习目标</h3>
+                    <p>掌握Segment Routing技术的原理与部署，能够设计并实施基于SR的广域承载网络。</p>
+                    
+                    <h3>适合人群</h3>
+                    <p>网络工程师、网络架构师、运营商技术人员</p>
+                `
+            },
+            m8: {
+                title: "M8 - 网络编程与自动化运维",
+                content: `
+                    <h3>课程概述</h3>
+                    <p>本模块讲解网络自动化运维技术，通过实际案例帮助学员掌握使用编程手段实现网络设备的自动化管理。</p>
+                    
+                    <h3>课程内容</h3>
+                    <div class="course-list">
+                        <div class="course-item"><span class="course-number">1.</span> 基于SSH的自动化运维案例</div>
+                        <div class="course-item"><span class="course-number">2.</span> 基于SFTP的配置拷贝自动化案例</div>
+                        <div class="course-item"><span class="course-number">3.</span> 基于Netconf的网络自动化案例</div>
+                        <div class="course-item"><span class="course-number">4.</span> SNMP自动化案例</div>
+                        <div class="course-item"><span class="course-number">5.</span> 其他自动化案例</div>
+                    </div>
+                    
+                    <h3>学习目标</h3>
+                    <p>掌握网络自动化运维技术，能够使用Python等编程语言实现网络设备的自动化配置、监控和管理。</p>
+                    
+                    <h3>适合人群</h3>
+                    <p>网络工程师、自动化工程师、DevOps工程师</p>
+                `
+            },
+            m9: {
+                title: "M9 - 企业网络架构设计与项目规划",
+                content: `
+                    <h3>课程概述</h3>
+                    <p>本模块聚焦企业网络架构设计与项目规划，通过实际案例帮助学员掌握大型网络项目的规划与实施方法。</p>
+                    
+                    <h3>课程内容</h3>
+                    <div class="course-list">
+                        <div class="course-item"><span class="course-number">1.</span> 企业网络架构总体设计</div>
+                        <div class="course-item"><span class="course-number">2.</span> 网络项目规划方法论</div>
+                        <div class="course-item"><span class="course-number">3.</span> 网络架构评估与优化</div>
+                        <div class="course-item"><span class="course-number">4.</span> 网络项目实施方案设计</div>
+                        <div class="course-item"><span class="course-number">5.</span> 网络项目文档编写规范</div>
+                        <div class="course-item"><span class="course-number">6.</span> 网络项目验收与交付</div>
+                    </div>
+                    
+                    <h3>学习目标</h3>
+                    <p>掌握企业网络架构设计与项目规划的核心技能，能够独立完成大型网络项目的规划、设计与实施。</p>
+                    
+                    <h3>适合人群</h3>
+                    <p>网络架构师、项目经理、高级网络工程师</p>
+                `
+            }
+        };
+
+        // DOM元素
+        const detailPanel = document.getElementById('detailPanel');
+        const detailTitle = document.getElementById('detailTitle');
+        const detailContent = document.getElementById('detailContent');
+        const closeDetail = document.getElementById('closeDetail');
+        const overlay = document.getElementById('overlay');
+        const moduleNames = document.querySelectorAll('.module-name');
+        const tabs = document.querySelectorAll('.tab');
+        const tableRows = document.querySelectorAll('.comparison-table tbody tr');
+
+        // 显示模块详情
+        function showModuleDetail(moduleId) {
+            const detail = moduleDetails[moduleId];
+            if (detail) {
+                detailTitle.textContent = detail.title;
+                detailContent.innerHTML = detail.content;
+                detailPanel.classList.add('active');
+                overlay.classList.add('active');
+            }
+        }
+
+        // 隐藏模块详情
+        function hideModuleDetail() {
+            detailPanel.classList.remove('active');
+            overlay.classList.remove('active');
+        }
+
+        // 为每个模块名称添加点击事件
+        moduleNames.forEach(module => {
+            module.addEventListener('click', function() {
+                const moduleId = this.getAttribute('data-module');
+                showModuleDetail(moduleId);
+            });
+        });
+
+        // 关闭详情面板
+        closeDetail.addEventListener('click', hideModuleDetail);
+        overlay.addEventListener('click', hideModuleDetail);
+
+        // 标签切换功能 - 课程分类过滤
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // 移除所有标签的active类
+                tabs.forEach(t => t.classList.remove('active'));
+                // 为当前点击的标签添加active类
+                this.classList.add('active');
+                
+                // 获取当前选择的级别
+                const level = this.getAttribute('data-level');
+                
+                // 根据级别过滤显示课程
+                tableRows.forEach(row => {
+                    if (level === 'all') {
+                        row.classList.remove('hidden');
+                    } else {
+                        const rowLevel = row.getAttribute('data-level');
+                        if (rowLevel === level) {
+                            row.classList.remove('hidden');
+                        } else {
+                            row.classList.add('hidden');
+                        }
+                    }
+                });
+                
+                // 添加动画效果
+                tableRows.forEach((row, index) => {
+                    if (!row.classList.contains('hidden')) {
+                        row.style.opacity = '0';
+                        row.style.transform = 'translateX(-20px)';
+                        
+                        setTimeout(() => {
+                            row.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                            row.style.opacity = '1';
+                            row.style.transform = 'translateX(0)';
+                        }, 50 * index);
+                    }
+                });
+            });
+        });
+
+        // 页面加载时的动画效果
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为表格行添加延迟动画
+            tableRows.forEach((row, index) => {
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(-20px)';
+                
+                setTimeout(() => {
+                    row.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    row.style.opacity = '1';
+                    row.style.transform = 'translateX(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>
